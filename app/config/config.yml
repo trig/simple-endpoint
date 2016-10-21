@@ -40,9 +40,16 @@ twig:
 # Doctrine Configuration
 doctrine:
     dbal:
-        driver:   pdo_sqlite
-        path:     "%database_path%"
-        dbname:   "%database_name%"
+        default_connection: default
+        connections:
+            default:
+                driver:   pdo_sqlite
+                path:     "%database_path%/%database_name%.db3"
+                dbname:   "%database_name%"
+            statistics:
+                driver:   pdo_sqlite
+                path:     "%database_path%/%database_name_statistics%.db3"
+                dbname:   "%database_name_statistics%"
         # if using pdo_sqlite as your database driver:
         #   1. add the path in parameters.yml
         #     e.g. database_path: "%kernel.root_dir%/data/data.db3"
@@ -51,9 +58,16 @@ doctrine:
         #     path:     "%database_path%"
 
     orm:
-        auto_generate_proxy_classes: "%kernel.debug%"
-        naming_strategy: doctrine.orm.naming_strategy.underscore
-        auto_mapping: true
+        default_entity_manager: default
+        entity_managers:
+            default:
+                connection: default
+                mappings:
+                    AppBundle:  ~
+            statistics:
+                connection: statistics
+                mappings:
+                    AppBundle:  ~
 
 # Swiftmailer Configuration
 swiftmailer:

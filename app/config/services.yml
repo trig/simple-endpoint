@@ -8,3 +8,9 @@ services:
         class: AppBundle\EventListener\ExceptionListener
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
+    app.request_listener:
+        class: AppBundle\EventListener\StatisticsListener
+        calls:
+            - [setEntityManager, ["@doctrine.orm.statistics_entity_manager"]]
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
