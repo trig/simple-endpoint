@@ -24,7 +24,7 @@ class GenerateLogsCommand extends ContainerAwareCommand
     {
         $io = new \Symfony\Component\Console\Style\SymfonyStyle($input, $output);
 
-        $qty = $input->hasArgument('quantity') ? (int)$input->getArgument('quantity') : self::DEFAULT_QUANTITY;
+        $qty = $input->hasOption('quantity') ? (int)$input->getOption('quantity') : self::DEFAULT_QUANTITY;
 
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
