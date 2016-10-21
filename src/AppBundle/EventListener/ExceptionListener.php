@@ -15,6 +15,8 @@ class ExceptionListener
         $e = $event->getException();
 
         $response->setStatusCode(\Symfony\Component\HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR);
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->headers->set('Access-Control-Allow-Methods', 'GET');
         $response->setData([
             'error' => [
                 'code' => (int)$e->getCode(),
