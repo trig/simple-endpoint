@@ -22,9 +22,7 @@ class EndpointController extends Controller
         /* @var $qb QueryBuilder */
         $qb = $em->createQueryBuilder('l')
           ->select('l')
-          ->from('AppBundle:ObjectsLog', 'l')
-          ->setMaxResults($limit)
-          ->setFirstResult($offset);
+          ->from('AppBundle:ObjectsLog', 'l');
 
         if ($filterCriteria = $req->query->get('f', false)) {
             if (isset($filterCriteria['type'])) {
@@ -41,21 +39,34 @@ class EndpointController extends Controller
             }
         }
 
+        $countQb = clone $qb;
+
+        $qb->setMaxResults($limit)
+          ->setFirstResult($offset);
+
         $response = new \Symfony\Component\HttpFoundation\JsonResponse();
+
+        $total = (int)$countQb->select('COUNT(l)')->getQuery()->getSingleScalarResult();
+        $totalPages = round($total/$limit);
 
         try {
             $result = $qb->getQuery()->getArrayResult();
-            if(!empty($result)){
-                $result = array_map(function($log){
+            if (!empty($result)) {
+                $result = array_map(function($log) {
                     $log['createdAt'] = $log['createdAt']->format('Y-m-d H:i');
                     return $log;
                 }, $result);
             }
             $response->setData([
                 'status' => true,
-                'payload' => $result
+                'payload' => [
+                    'collection' => $result,
+                    'pagination' => [
+                        'totalItems' => $total,
+                        'totalPages' => $totalPages
+                    ]
+                ]
             ]);
-            
         } catch (\Exception $e) {
             $response->setStatusCode(\Symfony\Component\HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR);
             $response->setData([
@@ -67,7 +78,7 @@ class EndpointController extends Controller
         }
 
         if ($isPretty) {
-            $response->setEncodingOptions(JSON_PRETTY_PRINT);
+            $response->setEncodingOptions(JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
         }
 
         return $response;
