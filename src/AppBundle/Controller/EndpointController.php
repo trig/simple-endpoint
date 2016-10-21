@@ -95,10 +95,10 @@ class EndpointController extends Controller
             $result['types'] = $conn->query("SELECT DISTINCT type FROM objects_log")
               ->fetchAll(\PDO::FETCH_COLUMN);
 
-            $result['min_date'] = substr($conn->query("SELECT MAX(created_at) FROM objects_log")
+            $result['max_date'] = substr($conn->query("SELECT MAX(created_at) FROM objects_log")
                 ->fetchAll(\PDO::FETCH_COLUMN)[0], 0, -3);
 
-            $result['max_date'] = substr($conn->query("SELECT MIN(created_at) FROM objects_log")
+            $result['min_date'] = substr($conn->query("SELECT MIN(created_at) FROM objects_log")
                 ->fetchAll(\PDO::FETCH_COLUMN)[0], 0, -3);
 
             $response = $this->getResponse($isPretty);
