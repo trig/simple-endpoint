@@ -62,7 +62,7 @@ class EndpointController extends Controller
                 'payload' => [
                     'collection' => $result,
                     'pagination' => [
-                        'totalItems' => $total,
+                        'totalEntities' => $total,
                         'totalPages' => $totalPages
                     ]
                 ]
